@@ -11,6 +11,10 @@ export class AxiosClient {
       baseURL,
       headers: {
         Authorization: this.getToken(),
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'cross-site',
+        Origin: 'http://localhost:8080',
       },
       timeout: 10000,
       timeoutErrorMessage: SYSTEM_ERROR.TIMEOUT_ERROR.MESSAGE,

@@ -19,7 +19,7 @@ const _publicRoutes: RouteObject[] = [
   {
     path: '/',
     element: <PublicLayout />,
-    children: [{ element: <HomeScreen /> }, { path: 'login', element: <LoginScreen /> }],
+    children: [{ path: '/', element: <HomeScreen /> }, { path: 'login', element: <LoginScreen /> }],
   },
   { element: <NotFoundScreen />, path: '*' },
 ];
