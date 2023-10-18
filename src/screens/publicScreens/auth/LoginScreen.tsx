@@ -6,7 +6,7 @@ import { useFormik } from 'formik';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 
-import { useAppDispatch } from 'src/stores';
+import { useAppDispatch, useAppSelector } from 'src/stores';
 import { InputField } from 'src/components/form';
 import { loginAction } from 'src/stores/screens/auth/auth.action';
 
@@ -15,6 +15,7 @@ const { Content } = Layout;
 const LoginScreen: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const isLoading = useAppSelector(state => state.auth.isLoading);
 
   const validationSchema = yup.object().shape({
     username: yup.string().required('USERNAME REQUIRED'),
@@ -22,8 +23,8 @@ const LoginScreen: React.FC = () => {
   });
 
   const initialValues = {
-    username: 'tritest',
-    password: '123456789',
+    username: '',
+    password: '',
   };
 
   const onLoginSuccess = (): void => {
@@ -72,12 +73,13 @@ const LoginScreen: React.FC = () => {
                 size: 'middle',
                 prefix: <LockOutlined className="site-form-item-icon" />,
                 placeholder: 'Password',
+                type: 'password',
               }}
               error={formik.errors.password}
               touched={formik.touched.password}
             />
 
-            <Button className="btn-submit" htmlType="submit" type="primary">
+            <Button loading={isLoading} className="btn-submit" htmlType="submit" type="primary">
               Login
             </Button>
           </Form>

@@ -1,6 +1,6 @@
 import React from 'react';
 import type { RouteObject } from 'react-router-dom';
-
+import { PublishedRoutes } from 'src/contexts/requiredAuth/RequiredAuth';
 import { PublicLayout } from 'src/layouts';
 
 const HomeScreen = React.lazy(
@@ -21,8 +21,11 @@ const NotFoundScreen = React.lazy(
 
 const _publicRoutes: RouteObject[] = [
   {
-    path: '/',
-    element: <PublicLayout />,
+    element: (
+      <PublishedRoutes>
+        <PublicLayout />
+      </PublishedRoutes>
+    ),
     children: [
       { path: '/', element: <HomeScreen /> },
       { path: 'login', element: <LoginScreen /> },

@@ -11,7 +11,11 @@ const initialState: Auth.LoginState = {
 const { actions, reducer } = createSlice({
   name: 'auth_slice',
   initialState,
-  reducers: {},
+  reducers: {
+    logOut: state => {
+      state.meInfo = null;
+    }
+  },
   extraReducers: builder => {
     builder
       .addCase(loginAction.pending, (state, action) => {
@@ -39,6 +43,7 @@ const { actions, reducer } = createSlice({
       })
       .addCase(getMeAction.fulfilled, (state, action) => {
         state.getMeLoading = false;
+        state.meInfo = action.payload;
       })
       .addCase(getMeAction.rejected, (state, action) => {
         state.getMeLoading = false;

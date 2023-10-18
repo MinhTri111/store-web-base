@@ -2,6 +2,9 @@ import React from 'react';
 import { Layout, Image } from 'antd';
 import { useOutlet, NavLink, useNavigate } from 'react-router-dom';
 
+import { useAppSelector, useAppDispatch } from 'src/stores';
+import actions from 'src/stores/screens/auth/auth.reducer';
+
 import { PrivateLayoutStyle, ButtonAuthStyled } from './PrivateLayout.style';
 import LOGO from 'src/assets/icons/logo.png';
 
@@ -10,6 +13,14 @@ const { Header, Content, Footer } = Layout;
 const PublicLayout: React.FC = () => {
   const outlet = useOutlet();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const info = useAppSelector(state => state.auth.meInfo);
+
+  const handleLougout = async (): Promise<void> => {
+    await dispatch(actions.logOut());
+    localStorage.clear();
+    navigate('/login');
+  };
 
   return (
     <PrivateLayoutStyle>
@@ -22,7 +33,7 @@ const PublicLayout: React.FC = () => {
               alt="logo"
               preview={false}
               onClick={() => {
-                navigate('/');
+                navigate('/dashboard');
               }}
             />
           </div>
@@ -33,11 +44,11 @@ const PublicLayout: React.FC = () => {
             >
               HOME
             </NavLink>
-
+            <p>Hello {info?.username} </p>
             <div className="button-auth">
               <ButtonAuthStyled
                 onClick={() => {
-                  navigate('/register');
+                  void handleLougout();
                 }}
               >
                 Logout

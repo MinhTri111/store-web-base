@@ -33,6 +33,10 @@ export const PrivateLayoutStyle = styled(Layout)`
         align-items: center;
         gap: 100px;
 
+        p{
+          margin-bottom: initial;
+        }
+
         a {
           font-weight: 500;
           height: 90%;
