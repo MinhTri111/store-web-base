@@ -14,6 +14,7 @@ export const PublicLayoutStyle = styled(Layout)`
       text-align: center;
       padding: 0 100px;
       font-size: 26px;
+      border-bottom: 1px solid #eaeef2;
       margin-bottom: 10px;
 
       a {

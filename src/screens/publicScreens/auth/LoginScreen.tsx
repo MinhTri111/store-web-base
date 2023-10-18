@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Col, Divider, Form, Layout, Row } from 'antd';
+import { Button, Col, Divider, Form, Layout, Row, Typography } from 'antd';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
@@ -11,6 +11,7 @@ import { InputField } from 'src/components/form';
 import { loginAction } from 'src/stores/screens/auth/auth.action';
 
 const { Content } = Layout;
+const { Title } = Typography;
 
 const LoginScreen: React.FC = () => {
   const navigate = useNavigate();
@@ -49,8 +50,13 @@ const LoginScreen: React.FC = () => {
   return (
     <LoginScreenStyle>
       <Row>
+        <Col span={24}>
+          <Title style={{ textAlign: 'center' }}>LOGIN</Title>
+        </Col>
         <Col span={8} />
         <Col span={8}>
+          <Divider />
+
           <Form name="login" className="login-form" onFinish={() => formik.handleSubmit()}>
             <InputField
               field={formik.getFieldProps('username')}
@@ -96,7 +102,7 @@ export default LoginScreen;
 const LoginScreenStyle = styled(Content)`
   height: 100%;
   width: 100%;
-
+  margin-top: 100px;
   display: flex;
   flex-direction: column;
   justify-content: center;

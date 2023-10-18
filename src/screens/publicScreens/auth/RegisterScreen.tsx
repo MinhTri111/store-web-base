@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Col, Divider, Form, Layout, Row, message } from 'antd';
+import { Button, Col, Divider, Form, Layout, Row, message, Typography } from 'antd';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
@@ -11,11 +11,12 @@ import { InputField } from 'src/components/form';
 import { registerAction } from 'src/stores/screens/auth/auth.action';
 
 const { Content } = Layout;
+const { Title } = Typography;
 
 const RegisterScreen: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const isLoading = useAppSelector(state => state.auth.isLoading)
+  const isLoading = useAppSelector(state => state.auth.isLoading);
 
   const validationSchema = yup.object().shape({
     username: yup.string().required('USER  REQUIRED'),
@@ -48,10 +49,14 @@ const RegisterScreen: React.FC = () => {
   const { setFieldValue } = formik;
 
   return (
-    <LoginScreenStyle>
+    <RegisterScreenStyle>
       <Row>
+        <Col span={24}>
+          <Title style={{ textAlign: 'center' }}>REGISTER</Title>
+        </Col>
         <Col span={8} />
         <Col span={8}>
+          <Divider />
           <Form name="login" className="register-form" onFinish={() => formik.handleSubmit()}>
             <InputField
               field={formik.getFieldProps('username')}
@@ -88,16 +93,16 @@ const RegisterScreen: React.FC = () => {
         </Col>
         <Col span={8} />
       </Row>
-    </LoginScreenStyle>
+    </RegisterScreenStyle>
   );
 };
 
 export default RegisterScreen;
 
-const LoginScreenStyle = styled(Content)`
+const RegisterScreenStyle = styled(Content)`
   height: 100%;
   width: 100%;
-
+  margin-top: 100px;
   display: flex;
   flex-direction: column;
   justify-content: center;

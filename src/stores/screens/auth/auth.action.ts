@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { message } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 import AUTH_API from './auth.api';
 import { LOCAL_STORAGE_KEY } from 'src/constants';
@@ -18,6 +19,7 @@ export const loginAction = createAsyncThunk<any, Auth.LoginRequestPayload>(
 
       return user;
     } catch (err: any) {
+      void message.error('Wrong username or password');
       rejectWithValue(err?.response?.data || err?.name);
     }
   },
@@ -45,6 +47,8 @@ export const getMeAction = createAsyncThunk<any>('me', async (_, { dispatch, rej
 
     return res;
   } catch (err: any) {
+    const navigate = useNavigate();
+    navigate('/login');
     return rejectWithValue(err);
   }
 });
