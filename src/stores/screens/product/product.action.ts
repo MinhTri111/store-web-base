@@ -4,10 +4,9 @@ import PRODUCT_API from './product.api';
 
 export const getListCategoriesAction = createAsyncThunk<any>(
   'categories',
-  async (params: any, { dispatch, rejectWithValue }) => {
+  async (_, { dispatch, rejectWithValue }) => {
     try {
-      const res = await PRODUCT_API.getListCategoryAPI(params);
-
+      const res = await PRODUCT_API.getListCategoryAPI();
       return res;
     } catch (err: any) {
       return rejectWithValue(err);
@@ -15,9 +14,9 @@ export const getListCategoriesAction = createAsyncThunk<any>(
   },
 );
 
-export const getListProductAction = createAsyncThunk<any>(
-  'categories',
-  async (params: any, { dispatch, rejectWithValue }) => {
+export const getListProductAction = createAsyncThunk<any, Product.ParamsListProduct>(
+  'product',
+  async (params, { dispatch, rejectWithValue }) => {
     try {
       const res = await PRODUCT_API.getListProductAPI(params);
 

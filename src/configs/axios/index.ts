@@ -1,5 +1,5 @@
 import { AxiosClient } from './axios';
 
-const Axios = new AxiosClient(`${process.env.REACT_APP_API_URL}`);
+const Axios = new AxiosClient();
 
 export default Axios;

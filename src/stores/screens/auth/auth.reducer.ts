@@ -1,10 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { loginAction, getMeAction } from './auth.action';
+import { loginAction, getMeAction, registerAction } from './auth.action';
 
 const initialState: Auth.LoginState = {
   isLoading: false,
   error: null,
   meInfo: null,
+  getMeLoading: false,
 };
 
 const { actions, reducer } = createSlice({
@@ -23,15 +24,24 @@ const { actions, reducer } = createSlice({
         state.isLoading = false;
         state.error = action.error;
       })
-
-      .addCase(getMeAction.pending, (state, action) => {
+      .addCase(registerAction.pending, (state, action) => {
         state.isLoading = true;
       })
-      .addCase(getMeAction.fulfilled, (state, action) => {
+      .addCase(registerAction.fulfilled, (state, action) => {
         state.isLoading = false;
       })
-      .addCase(getMeAction.rejected, (state, action) => {
+      .addCase(registerAction.rejected, (state, action) => {
         state.isLoading = false;
+        state.error = action.error;
+      })
+      .addCase(getMeAction.pending, (state, action) => {
+        state.getMeLoading = true;
+      })
+      .addCase(getMeAction.fulfilled, (state, action) => {
+        state.getMeLoading = false;
+      })
+      .addCase(getMeAction.rejected, (state, action) => {
+        state.getMeLoading = false;
         state.error = action.payload;
       });
   },

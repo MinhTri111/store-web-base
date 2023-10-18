@@ -5,6 +5,8 @@ const { Content } = Layout;
 
 export const HomeScreenStyled = styled(Content)`
   width: 100%;
+  height: 100%;
+  margin-bottom: 20px;
   .col-banner {
     .ant-image {
       height: 450px;

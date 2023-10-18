@@ -1,13 +1,22 @@
 declare namespace Auth {
   export interface LoginState {
     isLoading: boolean;
+    getMeLoading: boolean;
     error: any;
     meInfo: MeInfo | null;
   }
 
   export interface LoginRequestData {
-    email: string;
+    username: string;
     password: string;
+  }
+
+  export interface ResponseRegister {
+    id: number;
+    created: string;
+    password: string;
+    status: string;
+    username: string;
   }
 
   export interface LoginRequestPayload {

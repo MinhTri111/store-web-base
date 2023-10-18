@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Col, Divider, Form, Layout, Row } from 'antd';
+import { Button, Col, Divider, Form, Layout, Row, message } from 'antd';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
@@ -8,16 +8,16 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAppDispatch } from 'src/stores';
 import { InputField } from 'src/components/form';
-import { loginAction } from 'src/stores/screens/auth/auth.action';
+import { registerAction } from 'src/stores/screens/auth/auth.action';
 
 const { Content } = Layout;
 
-const LoginScreen: React.FC = () => {
+const RegisterScreen: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const validationSchema = yup.object().shape({
-    username: yup.string().required('USERNAME REQUIRED'),
+    username: yup.string().required('USER  REQUIRED'),
     password: yup.string().required('PASSWORD REQUIRED').min(8),
   });
 
@@ -26,12 +26,13 @@ const LoginScreen: React.FC = () => {
     password: '123456789',
   };
 
-  const onLoginSuccess = (): void => {
-    navigate('/dashboard');
+  const onRegisterSuccess = (): void => {
+    void message.success('Register success!!!');
+    navigate('/login');
   };
 
-  const handleLogin = (value): void => {
-    void dispatch(loginAction({ data: value, callback: onLoginSuccess }));
+  const handleRegister = (value): void => {
+    void dispatch(registerAction({ data: value, callback: onRegisterSuccess }));
   };
 
   const formik = useFormik({
@@ -39,7 +40,7 @@ const LoginScreen: React.FC = () => {
     validationSchema,
     initialValues,
     onSubmit: value => {
-      handleLogin(value);
+      handleRegister(value);
     },
   });
 
@@ -50,7 +51,7 @@ const LoginScreen: React.FC = () => {
       <Row>
         <Col span={8} />
         <Col span={8}>
-          <Form name="login" className="login-form" onFinish={() => formik.handleSubmit()}>
+          <Form name="login" className="register-form" onFinish={() => formik.handleSubmit()}>
             <InputField
               field={formik.getFieldProps('username')}
               setFieldValue={setFieldValue}
@@ -78,7 +79,7 @@ const LoginScreen: React.FC = () => {
             />
 
             <Button className="btn-submit" htmlType="submit" type="primary">
-              Login
+              Register
             </Button>
           </Form>
           <Divider />
@@ -89,7 +90,7 @@ const LoginScreen: React.FC = () => {
   );
 };
 
-export default LoginScreen;
+export default RegisterScreen;
 
 const LoginScreenStyle = styled(Content)`
   height: 100%;

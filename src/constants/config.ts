@@ -44,4 +44,8 @@ export const THEME_TYPE = {
   DARK: 'dark',
 };
 
+export const PARAM_PRODUCT = {
+  LIMIT: 30,
+}
+
 export const TIME_DEBOUNCE = 500;

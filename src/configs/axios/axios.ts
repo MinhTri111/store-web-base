@@ -1,23 +1,19 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
-import { SYSTEM_ERROR, LOCAL_STORAGE_KEY } from 'src/constants';
+import { LOCAL_STORAGE_KEY } from 'src/constants';
 
 export class AxiosClient {
   instance: AxiosInstance;
 
   token: string = localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN) ?? '';
 
-  constructor(baseURL: string) {
+  constructor() {
     this.instance = axios.create({
-      baseURL,
       headers: {
-        Authorization: this.getToken(),
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Sec-Fetch-Mode': 'cors',
-        'Sec-Fetch-Site': 'cross-site',
-        Origin: 'http://localhost:8080',
+        accept: '*/*',
+        'Content-Type': 'application/json',
+        Authorization: this.getToken()
       },
-      timeout: 10000,
-      timeoutErrorMessage: SYSTEM_ERROR.TIMEOUT_ERROR.MESSAGE,
+      baseURL: `${process.env.REACT_APP_API_URL}`,
     });
 
     this._initializeResponseInterceptor();

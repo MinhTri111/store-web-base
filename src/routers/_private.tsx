@@ -3,11 +3,8 @@ import type { RouteObject } from 'react-router-dom';
 
 import { PrivateLayout } from 'src/layouts';
 
-const DashboardScreen = React.lazy(
-  async () => await import('src/screens/privateScreens').then(module => ({ default: module.DashboardScreen })),
-);
-const AccountScreen = React.lazy(
-  async () => await import('src/screens/privateScreens').then(module => ({ default: module.AccountScreen })),
+const HomeScreen = React.lazy(
+  async () => await import('src/screens/publicScreens').then(module => ({ default: module.HomeScreen })),
 );
 
 const NotFoundScreen = React.lazy(
@@ -18,8 +15,7 @@ const _privateRoutes: RouteObject[] = [
   {
     element: <PrivateLayout />,
     children: [
-      { path: '/dashboard', element: <DashboardScreen /> },
-      { path: '/account', element: <AccountScreen /> },
+      { path: '/dashboard', element: <HomeScreen /> },
       { element: <NotFoundScreen />, path: '*' },
     ],
   },

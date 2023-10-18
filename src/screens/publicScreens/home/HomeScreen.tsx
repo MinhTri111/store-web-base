@@ -9,7 +9,7 @@ import { HomeScreenStyled } from './HomeScreen.styled';
 const HomeScreen: React.FC = () => {
   return (
     <HomeScreenStyled>
-      <Row>
+      <Row style={{ height: '100%' }}>
         <Col span={24} className="col-banner">
           <Banner />
         </Col>
