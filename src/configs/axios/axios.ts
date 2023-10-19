@@ -1,6 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
 import { message } from 'antd';
-import { useNavigate } from 'react-router-dom';
 import { LOCAL_STORAGE_KEY } from 'src/constants';
 
 export class AxiosClient {
@@ -49,9 +48,7 @@ export class AxiosClient {
   };
 
   _handleLogout = (): void => {
-    const navigate = useNavigate();
     localStorage.clear();
-    navigate('/login');
   };
 
   _handleResponseSuccess = ({ data }: AxiosResponse): AxiosResponse => data;
