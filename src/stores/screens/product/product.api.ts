@@ -9,9 +9,13 @@ const PRODUCT_API = {
   },
 
   getListProductAPI: async (params: Product.ParamsListProduct) => {
-    const response = await Axios.get(`/catalog/products?limit=${params?.limit}&skip=${params?.skip}`);
-
-    return response;
+    if (typeof params.category === 'string') {
+      const response = await Axios.get(`/catalog/category/${params.category}/products?limit=${params?.limit}&skip=${params?.skip}`);
+      return response;
+    } else {
+      const response = await Axios.get(`/catalog/products?limit=${params?.limit}&skip=${params?.skip}`);
+      return response;
+    }
   },
 };
 

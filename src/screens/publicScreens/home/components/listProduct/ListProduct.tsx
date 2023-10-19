@@ -37,7 +37,7 @@ const ListProduct: React.FC = () => {
               selectProps={{
                 showArrow: true,
                 placeholder: '',
-                mode: 'multiple',
+                allowClear: true
               }}
               error={errors.sortBy}
               touched={touched.sortBy}

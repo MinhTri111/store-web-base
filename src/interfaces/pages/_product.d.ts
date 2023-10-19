@@ -18,7 +18,7 @@ declare namespace Product {
   }
 
   export interface Product_FormValue {
-    sortBy: string[];
+    sortBy: string | undefined;
   }
 
   export interface ResponseCategories {
@@ -33,6 +33,7 @@ declare namespace Product {
   export interface ParamsListProduct {
     limit: number | string;
     skip: number | string;
+    category?: string;
   }
   export interface RootProduct {}
 

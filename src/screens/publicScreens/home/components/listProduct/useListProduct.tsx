@@ -12,6 +12,7 @@ export const useListProduct = (): any => {
   const products = useAppSelector(state => state.product.listProduct);
   const isLoading = useAppSelector(state => state.product.isLoading);
   const total = useAppSelector(state => state.product.total);
+  const [currentSearch, setCurrentSearch] = useState<any>(undefined);
   const [tableParams, setTableParams] = useState<Product.TableParam>({
     current: 1,
     pageSize: PARAM_PRODUCT.LIMIT,
@@ -28,7 +29,11 @@ export const useListProduct = (): any => {
   };
 
   const handleOnChangePagination = (page: number): void => {
-    void fetchProducts({ limit: PARAM_PRODUCT.LIMIT, skip: PARAM_PRODUCT.LIMIT * (page - 1) + 1 });
+    void fetchProducts({
+      limit: PARAM_PRODUCT.LIMIT,
+      skip: PARAM_PRODUCT.LIMIT * (page - 1) + 1,
+      category: currentSearch,
+    });
     setTableParams({
       ...tableParams,
       current: page,
@@ -40,26 +45,31 @@ export const useListProduct = (): any => {
   }, [products]);
 
   const defaultValue = {
-    sortBy: [],
+    sortBy: undefined,
   };
 
   const formik = useFormik<Product.Product_FormValue>({
     initialValues: { ...defaultValue },
     onSubmit(values) {
-      if (values.sortBy?.length && listProduct) {
-        const listProductFilter = products?.filter(item =>
-          values?.sortBy.includes(item?.category ? item.category : ''),
-        );
-        setListProduct(listProductFilter?.length ? listProductFilter : []);
-      } else {
-        setListProduct(products);
-      }
+      void fetchProducts({
+        limit: PARAM_PRODUCT.LIMIT,
+        skip: 1,
+        category: values.sortBy === null ? 'null' : values.sortBy,
+      });
+      setCurrentSearch(values.sortBy);
+      setTableParams({
+        current: 1,
+        pageSize: PARAM_PRODUCT.LIMIT,
+      });
     },
   });
 
   const handleFilterCatogories = (categories: Product.ListCategories[]): Product.OptionValue[] | [] => {
     if (categories?.length) {
-      return categories.map(item => ({ value: item.category, label: item.category === null ? 'Null' : item.category }));
+      return categories.map(item => ({
+        value: item.category === '' ? '""' : item.category,
+        label: item.category === null ? 'Null' : item.category === '' ? '""' : item.category,
+      }));
     }
     return [];
   };
