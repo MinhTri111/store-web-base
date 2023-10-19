@@ -1,4 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
+import { message } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import { LOCAL_STORAGE_KEY } from 'src/constants';
 
 export class AxiosClient {
@@ -11,7 +13,7 @@ export class AxiosClient {
       headers: {
         accept: '*/*',
         'Content-Type': 'application/json',
-        Authorization: this.getToken()
+        Authorization: this.getToken(),
       },
       baseURL: `${process.env.REACT_APP_API_URL}`,
     });
@@ -46,10 +48,23 @@ export class AxiosClient {
     return Promise.reject(error);
   };
 
+  _handleLogout = (): void => {
+    const navigate = useNavigate();
+    localStorage.clear();
+    navigate('/login');
+  };
+
   _handleResponseSuccess = ({ data }: AxiosResponse): AxiosResponse => data;
 
-  _handleResponseError = async (error: AxiosError & Error): Promise<never> => {
-    return await Promise.reject(error?.response?.data);
+  _handleResponseError = async (error: AxiosError & Error): Promise<any> => {
+    if (error.response && error.response.status === 401) {
+      void message.error('Token expired');
+      this._handleLogout();
+    } else {
+      // eslint-disable-next-line
+      console.error(`[response error] [${JSON.stringify(error)}]`);
+      return await Promise.reject(error?.response?.data);
+    }
   };
 
   async request<T = any, R = AxiosResponse<T>, D = any>(config: AxiosRequestConfig<D>): Promise<R> {
