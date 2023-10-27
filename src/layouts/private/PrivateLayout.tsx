@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout, Image } from 'antd';
-import { useOutlet, NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 
 import { useAppSelector, useAppDispatch } from 'src/stores';
 import actions from 'src/stores/screens/auth/auth.reducer';
@@ -10,16 +10,15 @@ import LOGO from 'src/assets/icons/logo.png';
 
 const { Header, Content, Footer } = Layout;
 
-const PublicLayout: React.FC = () => {
-  const outlet = useOutlet();
-  const navigate = useNavigate();
+const PublicLayout: React.FC< { children: React.ReactNode } > = ({ children }) => {
+  const history = useHistory();
   const dispatch = useAppDispatch();
   const info = useAppSelector(state => state.auth.meInfo);
 
   const handleLougout = async (): Promise<void> => {
     await dispatch(actions.logOut());
     localStorage.clear();
-    navigate('/login');
+    history.push('/login');
   };
 
   return (
@@ -33,14 +32,13 @@ const PublicLayout: React.FC = () => {
               alt="logo"
               preview={false}
               onClick={() => {
-                navigate('/dashboard');
+                history.push('/');
               }}
             />
           </div>
           <div className="body-header__menu">
             <NavLink
-              className={({ isActive, isPending }) => (isPending ? 'pending' : isActive ? 'active' : '')}
-              to={'/dashboard'}
+              to={'/'}
             >
               HOME
             </NavLink>
@@ -57,7 +55,7 @@ const PublicLayout: React.FC = () => {
           </div>
         </Header>
 
-        <Content className="body-content">{outlet}</Content>
+        <Content className="body-content">{children}</Content>
 
         <Footer className="body-footer">PhanHuuMinhTri</Footer>
       </Layout>

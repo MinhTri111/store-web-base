@@ -1,90 +1,126 @@
-import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
-import { message } from 'antd';
+/* eslint-disable symbol-description */
+import axios from 'axios';
+import { notification } from 'antd';
 import { LOCAL_STORAGE_KEY } from 'src/constants';
+import { isEmpty, assign } from 'lodash';
 
-export class AxiosClient {
-  instance: AxiosInstance;
+const singletonEnforcer = Symbol();
+class AxiosClient {
+  axiosClient: any;
 
-  token: string = localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN) ?? '';
+  static axiosClientInstance: AxiosClient;
 
-  constructor() {
-    this.instance = axios.create({
-      headers: {
-        accept: '*/*',
-        'Content-Type': 'application/json',
-        Authorization: this.getToken(),
-      },
+  constructor(enforcer: any) {
+    if (enforcer !== singletonEnforcer) {
+      throw new Error('Cannot initialize Axios client single instance');
+    }
+
+    this.axiosClient = axios.create({
       baseURL: `${process.env.REACT_APP_API_URL}`,
     });
+    void this.getExistTokenOnLocalStorage();
+    this.axiosClient.interceptors.request.use(
+      (configure: any) => {
+        const token = localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN) ?? '';
+        if (token) {
+          configure.headers.Authorization = `Bearer ${token}`;
+        }
+        return configure;
+      },
+      (error: any): any => Promise.reject(error),
+    );
 
-    this._initializeResponseInterceptor();
+    this.axiosClient.interceptors.response.use(
+      (response: any) => {
+        const { status, data } = response;
+        return {
+          status,
+          data,
+        };
+      },
+      (error: any) => {
+        if (error.response) {
+          const { data, status } = error.response;
+          switch (status) {
+            case 400:
+              break;
+            case 500:
+              break;
+            case 401:
+              break;
+            case 404:
+              break;
+            case 403:
+              break;
+            default:
+              break;
+          }
+          if (status !== 401 && status < 500) {
+            notification.error({
+              message: 'Error',
+              description: data?.messagessage,
+              duration: 4,
+            });
+          }
+
+          throw data;
+        } else {
+          throw error;
+        }
+      },
+    );
   }
 
-  getToken(): string {
-    return `Bearer ${this.token}`;
-  }
-
-  setToken(token: string): void {
-    this.token = token;
-  }
-
-  _initializeResponseInterceptor = (): void => {
-    this.instance.interceptors.request.use(this._handleRequestSuccess, this._handleRequestError);
-    this.instance.interceptors.response.use(this._handleResponseSuccess, this._handleResponseError);
-  };
-
-  _handleRequestSuccess = (config: AxiosRequestConfig): any => {
-    return config;
-  };
-
-  _handleRequestError = (error: AxiosError): unknown => {
-    // eslint-disable-next-line
-    console.error(`[request error] [${JSON.stringify(error)}]`);
-    if (error.response) {
-      return error?.response?.data;
+  static get instance(): AxiosClient {
+    if (!this.axiosClientInstance) {
+      this.axiosClientInstance = new AxiosClient(singletonEnforcer);
     }
 
-    return Promise.reject(error);
-  };
+    return this.axiosClientInstance;
+  }
 
-  _handleLogout = (): void => {
-    localStorage.clear();
-  };
-
-  _handleResponseSuccess = ({ data }: AxiosResponse): AxiosResponse => data;
-
-  _handleResponseError = async (error: AxiosError & Error): Promise<any> => {
-    if (error.response && error.response.status === 401) {
-      void message.error('Token expired');
-      this._handleLogout();
-    } else {
-      // eslint-disable-next-line
-      console.error(`[response error] [${JSON.stringify(error)}]`);
-      return await Promise.reject(error?.response?.data);
+  async getExistTokenOnLocalStorage(): Promise<Promise<void>> {
+    const userToken: string = (await localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN)) ?? '';
+    if (userToken) {
+      await this.setHeader(userToken);
     }
+  }
+
+  setHeader = async (userToken: string): Promise<void> => {
+    this.axiosClient.defaults.headers.common.Authorization = `Bearer ${userToken ?? null}`;
   };
 
-  async request<T = any, R = AxiosResponse<T>, D = any>(config: AxiosRequestConfig<D>): Promise<R> {
-    return await this.instance.request<T, R>(config);
-  }
+  get = async (resource: string, slug = '', config: any = {}): Promise<any> => {
+    let { headers } = config;
+    if (!headers) {
+      headers = this.axiosClient.defaults.headers;
+    }
+    slug += '';
+    const requestURL = isEmpty(slug) ? `${resource}` : `${resource}/${slug}`;
+    return this.axiosClient.get(requestURL, {
+      data: null,
+      ...assign(config, { headers }),
+    });
+  };
 
-  async get<T = any, R = AxiosResponse<T>>(url: string, config?: AxiosRequestConfig): Promise<R> {
-    return await this.instance.get<T, R>(url, config);
-  }
+  post = async (resource: string, data: any, config = {}): Promise<any> => {
+    return this.axiosClient.post(`${resource}`, data, assign(config, this.axiosClient.defaults.headers));
+  };
 
-  async delete<T = any, R = AxiosResponse<T>>(url: string, config?: AxiosRequestConfig): Promise<R> {
-    return await this.instance.delete<T, R>(url, config);
-  }
+  update = async (resource: string, data: any, config = {}): Promise<any> =>
+    this.axiosClient.put(`${resource}`, data, assign(config, this.axiosClient.defaults.headers));
 
-  async post<T = any, R = AxiosResponse<T>>(url: string, data?: T, config?: AxiosRequestConfig): Promise<R> {
-    return await this.instance.post<T, R>(url, data, config);
-  }
+  put = async (resource: string, data: any, config = {}): Promise<any> =>
+    this.axiosClient.put(`${resource}`, data, assign(config, this.axiosClient.defaults.headers));
 
-  async put<T = any, R = AxiosResponse<T>>(url: string, data?: T, config?: AxiosRequestConfig): Promise<R> {
-    return await this.instance.put<T, R>(url, data, config);
-  }
+  patch = async (resource: string, data: any, config = {}): Promise<any> =>
+    this.axiosClient.patch(`${resource}`, data, assign(config, this.axiosClient.defaults.headers));
 
-  async patch<T = any, R = AxiosResponse<T>>(url: string, data?: T, config?: AxiosRequestConfig): Promise<R> {
-    return await this.instance.patch<T, R>(url, data, config);
-  }
+  delete = async (resource: string, data?: any, config = {}): Promise<any> =>
+    this.axiosClient.delete(`${resource}`, {
+      data,
+      ...assign(config, { headers: this.axiosClient.defaults.headers }),
+    });
 }
+
+export default AxiosClient.instance;

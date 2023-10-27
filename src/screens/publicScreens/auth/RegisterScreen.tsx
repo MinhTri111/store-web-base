@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from 'src/stores';
 import { InputField } from 'src/components/form';
@@ -14,7 +14,7 @@ const { Content } = Layout;
 const { Title } = Typography;
 
 const RegisterScreen: React.FC = () => {
-  const navigate = useNavigate();
+  const history = useHistory();
   const dispatch = useAppDispatch();
   const isLoading = useAppSelector(state => state.auth.isLoading);
 
@@ -30,7 +30,7 @@ const RegisterScreen: React.FC = () => {
 
   const onRegisterSuccess = (): void => {
     void message.success('Register success!!!');
-    navigate('/login');
+    history.push('/login');
   };
 
   const handleRegister = (value): void => {

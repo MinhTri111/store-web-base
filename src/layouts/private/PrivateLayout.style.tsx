@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 export const PrivateLayoutStyle = styled(Layout)`
   width: 100%;
-  overflow: scroll;
   .layout-body {
 
     .body-header {

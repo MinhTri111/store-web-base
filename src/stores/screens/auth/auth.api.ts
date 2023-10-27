@@ -1,10 +1,11 @@
+import { get } from 'lodash';
+
 import Axios from 'src/configs/axios';
-import { AxiosClient } from 'src/configs/axios/axios';
 
 const AUTH_API = {
   loginAPI: async (params: Auth.LoginRequestData) => {
     const response: any = await Axios.post('/auth/login', params);
-    return response;
+    return response.data;
   },
 
   registerAPI: async (params: Auth.LoginRequestData) => {
@@ -13,8 +14,9 @@ const AUTH_API = {
   },
 
   getMeAPI: async () => {
-    const response: Auth.ResponseRegister = await new AxiosClient().get('/auth/me');
-    return response;
+    const response: Auth.ResponseRegister = await Axios.get('/auth/me');
+    const data = get(response, 'data', null);
+    return data;
   },
 };
 

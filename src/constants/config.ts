@@ -46,6 +46,12 @@ export const THEME_TYPE = {
 
 export const PARAM_PRODUCT = {
   LIMIT: 30,
-}
+};
 
 export const TIME_DEBOUNCE = 500;
+
+export const TIME_SELECT = {
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
+};
